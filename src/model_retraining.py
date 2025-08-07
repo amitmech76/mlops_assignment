@@ -160,7 +160,7 @@ class ModelRetrainer:
                 mlflow.register_model(model_uri, "CaliforniaHousingBestModel")
             
             # Update performance history
-            self.performance_history[model_name] = {
+            self.performance_history['housing'] = {
                 'r2_score': best_score,
                 'timestamp': datetime.now().isoformat()
             }
