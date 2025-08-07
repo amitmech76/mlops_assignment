@@ -5,19 +5,20 @@ This script trains multiple regression models on the California Housing dataset
 and logs them with MLflow for experiment tracking and model versioning.
 """
 
-import os
 import logging
-from typing import Tuple, Dict, Any, Optional
+import os
+from typing import Any, Dict, Optional, Tuple
+
+import mlflow
+import mlflow.sklearn
 import numpy as np
 import pandas as pd
 from sklearn.datasets import fetch_california_housing
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
-import mlflow
-import mlflow.sklearn
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeRegressor
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

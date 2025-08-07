@@ -5,15 +5,16 @@ This script downloads, loads, validates, and preprocesses the California Housing
 for machine learning model training.
 """
 
-import os
 import logging
-import pandas as pd
-import numpy as np
-from sklearn.datasets import fetch_california_housing
-from sklearn.preprocessing import StandardScaler, RobustScaler
-from sklearn.model_selection import train_test_split
-from typing import Tuple, Dict, Any, Optional
+import os
 import warnings
+from typing import Any, Dict, Optional, Tuple
+
+import numpy as np
+import pandas as pd
+from sklearn.datasets import fetch_california_housing
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import RobustScaler, StandardScaler
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

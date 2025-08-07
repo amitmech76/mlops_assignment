@@ -5,24 +5,20 @@ This script trains multiple classification models on the Iris dataset
 and logs them with MLflow for experiment tracking and model versioning.
 """
 
-import os
 import logging
-from typing import Tuple, Dict, Any, Optional
-import numpy as np
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.svm import SVC
-from sklearn.metrics import (
-    accuracy_score,
-    classification_report,
-    precision_score,
-    recall_score,
-    f1_score,
-)
+import os
+from typing import Any, Dict, Optional, Tuple
+
 import mlflow
 import mlflow.sklearn
+import numpy as np
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import (accuracy_score, classification_report, f1_score,
+                             precision_score, recall_score)
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

@@ -1,15 +1,10 @@
-from prometheus_client import (
-    Counter,
-    Histogram,
-    Gauge,
-    Summary,
-    generate_latest,
-    CONTENT_TYPE_LATEST,
-)
-from prometheus_client.core import CollectorRegistry
-import time
-from typing import Dict, Any, Optional
 import threading
+import time
+from typing import Any, Dict, Optional
+
+from prometheus_client import (CONTENT_TYPE_LATEST, Counter, Gauge, Histogram,
+                               Summary, generate_latest)
+from prometheus_client.core import CollectorRegistry
 
 # Create a custom registry for our metrics
 registry = CollectorRegistry()

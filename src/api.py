@@ -1,33 +1,24 @@
-from fastapi import FastAPI, HTTPException, Request, Response
-from pydantic import BaseModel
+import os
+import time
+import uuid
+from datetime import datetime
+from typing import Any, Dict, List, Optional, Union
+
 import mlflow
 import mlflow.sklearn
-import pandas as pd
 import numpy as np
-from typing import List, Union, Dict, Any, Optional
-import os
-from datetime import datetime
-import uuid
-import time
-from logger import log_prediction_request, prediction_logger
-from schemas import (
-    HousingPredictionRequest,
-    IrisPredictionRequest,
-    PredictionResponse,
-    RetrainingRequest,
-    RetrainingResponse,
-    DataDriftRequest,
-    DataDriftResponse,
-    HealthCheckResponse,
-    ErrorResponse,
-)
-from prometheus_metrics import (
-    metrics_collector,
-    get_prometheus_metrics,
-    get_metrics_content_type,
-)
-from model_retraining import model_retrainer
+import pandas as pd
+from fastapi import FastAPI, HTTPException, Request, Response
+from pydantic import BaseModel
 
+from logger import log_prediction_request, prediction_logger
+from model_retraining import model_retrainer
+from prometheus_metrics import (get_metrics_content_type,
+                                get_prometheus_metrics, metrics_collector)
+from schemas import (DataDriftRequest, DataDriftResponse, ErrorResponse,
+                     HealthCheckResponse, HousingPredictionRequest,
+                     IrisPredictionRequest, PredictionResponse,
+                     RetrainingRequest, RetrainingResponse)
 
 # Global variables to store loaded models
 housing_model = None

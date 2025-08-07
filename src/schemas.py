@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field, validator
-from typing import Optional, Union, Dict, Any
+from typing import Any, Dict, Optional, Union
+
 import numpy as np
+from pydantic import BaseModel, Field, validator
 
 
 # Base prediction response schema

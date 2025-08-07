@@ -1,24 +1,22 @@
-import mlflow
-import mlflow.sklearn
-import pandas as pd
-import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression, LogisticRegression
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from sklearn.metrics import (
-    mean_squared_error,
-    r2_score,
-    accuracy_score,
-    classification_report,
-)
+import json
+import logging
+import os
 import threading
 import time
-import os
 from datetime import datetime, timedelta
-from typing import Dict, Any, Optional, List
-import json
 from pathlib import Path
-import logging
+from typing import Any, Dict, List, Optional
+
+import mlflow
+import mlflow.sklearn
+import numpy as np
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.linear_model import LinearRegression, LogisticRegression
+from sklearn.metrics import (accuracy_score, classification_report,
+                             mean_squared_error, r2_score)
+from sklearn.model_selection import train_test_split
+
 from prometheus_metrics import metrics_collector
 
 logger = logging.getLogger(__name__)

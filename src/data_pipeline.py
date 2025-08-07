@@ -5,16 +5,17 @@ This script provides a comprehensive data pipeline for both Iris and California 
 including downloading, validation, preprocessing, feature engineering, and data splitting.
 """
 
-import os
 import logging
-import pandas as pd
-import numpy as np
-from sklearn.datasets import load_iris, fetch_california_housing
-from sklearn.preprocessing import StandardScaler, RobustScaler, LabelEncoder
-from sklearn.model_selection import train_test_split
-from typing import Tuple, Dict, Any, Optional, Union
+import os
 import warnings
 from pathlib import Path
+from typing import Any, Dict, Optional, Tuple, Union
+
+import numpy as np
+import pandas as pd
+from sklearn.datasets import fetch_california_housing, load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, RobustScaler, StandardScaler
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
