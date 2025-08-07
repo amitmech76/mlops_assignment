@@ -1,0 +1,35 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'ml-prediction-api'
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    static_configs:
+      - targets: ['localhost:8000']
+        labels:
+          service: 'ml-prediction-api'
+          environment: 'development'
+
+    # Scrape metrics from the ML API
+    metrics_path: '/metrics/prometheus'
+    
+    # Scrape interval for this job
+    scrape_interval: 10s
+    
+    # Timeout for scrape requests
+    scrape_timeout: 5s
+    
+    # Relabeling rules
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        regex: '(.*)'
+        replacement: '${1}' 
