@@ -103,10 +103,80 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Pull latest Docker image
+        run: |
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+          docker tag ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }} ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+
+      - name: Set up Python for model training
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies and train models
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          cd src
+          python data_pipeline.py
+          python train_housing.py 
+          python train_iris.py
+          cd ..
+
+      - name: Make deployment script executable
+        run: chmod +x scripts/deploy_local.sh
+
       - name: Deploy to local environment
         run: |
-          echo "Deploying to local environment..."
-          # This would typically run deployment scripts
-          # For now, we'll just echo the deployment info
-          echo "Docker image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}"
-          echo "Deployment completed successfully!"
+          echo "🚀 Starting local deployment with trained models..."
+          # Use the actual deployment script
+          ./scripts/deploy_local.sh
+          
+          # Verify deployment
+          echo "🔍 Verifying deployment..."
+          sleep 15
+          
+          # Test the API endpoints
+          echo "📊 Testing API endpoints..."
+          curl -f http://localhost:8000/health || (echo "❌ Health check failed" && exit 1)
+          curl -f http://localhost:8000/models/info || (echo "❌ Models info failed" && exit 1)
+          
+          echo "✅ Local deployment completed and verified successfully!"
+          echo "📋 API is running at: http://localhost:8000"
+          echo "📊 API Documentation: http://localhost:8000/docs"
+
+      - name: Optional monitoring stack deployment
+        run: |
+          echo "🔍 Setting up monitoring stack..."
+          cd monitoring
+          
+          # Check if monitoring should be deployed (can be controlled via environment variable)
+          if [[ "${DEPLOY_MONITORING:-false}" == "true" ]]; then
+            echo "📊 Deploying Prometheus and Grafana monitoring..."
+            docker-compose -f docker-compose-monitoring.yml up -d
+            
+            # Wait for monitoring services
+            sleep 30
+            
+            # Verify monitoring
+            if curl -f http://localhost:9090/-/healthy > /dev/null 2>&1; then
+              echo "✅ Prometheus is healthy at http://localhost:9090"
+            fi
+            
+            if curl -f http://localhost:3000/api/health > /dev/null 2>&1; then
+              echo "✅ Grafana is healthy at http://localhost:3000 (admin/admin)"
+            fi
+            
+            echo "📊 Monitoring stack deployed successfully!"
+          else
+            echo "ℹ️  Monitoring deployment skipped (set DEPLOY_MONITORING=true to enable)"
+          fi
