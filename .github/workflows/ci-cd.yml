@@ -46,6 +46,7 @@ jobs:
       - name: Train models for testing
         run: |
           cd src
+          python data_pipeline.py
           python train_housing.py
           python train_iris.py
           cd ..
