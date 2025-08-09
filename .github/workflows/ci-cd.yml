@@ -77,12 +77,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Debug Docker info
-        run: |
-          echo "Docker username: ${{ secrets.DOCKERHUB_USERNAME }}"
-          echo "Image name: ${{ env.DOCKER_IMAGE }}"
-          echo "Full image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}"
-
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -115,38 +109,3 @@ jobs:
           # For now, we'll just echo the deployment info
           echo "Docker image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}"
           echo "Deployment completed successfully!"
-
-  deploy-ec2:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            # Pull the latest image
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
-            
-            # Stop existing container
-            docker stop ml-api || true
-            docker rm ml-api || true
-            
-            # Run new container
-            docker run -d \
-              --name ml-api \
-              --restart unless-stopped \
-              -p 8000:8000 \
-              -v /path/to/mlruns:/app/mlruns \
-              -e MLFLOW_TRACKING_URI=file:./mlruns \
-              ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
-            
-            # Health check
-            sleep 10
-            curl -f http://localhost:8000/health || exit 1 
