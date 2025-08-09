@@ -21,7 +21,7 @@ COPY run_api.py ./
 RUN mkdir -p mlruns logs
 
 # Train models during build (ensures models are available)
-RUN cd src && python train_housing.py && python train_iris.py && cd ..
+RUN cd src && python data_pipeline.py && python train_housing.py && python train_iris.py && cd ..
 
 ENV MLFLOW_TRACKING_URI=file:./mlruns
 
