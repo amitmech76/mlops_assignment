@@ -43,17 +43,19 @@ async def lifespan(app: FastAPI):
     print("🚀 Starting ML Prediction API...")
     print(f"🔧 Working directory: {os.getcwd()}")
     print(f"🏗️ MLflow URI: {os.getenv('MLFLOW_TRACKING_URI', 'file:./mlruns')}")
-    
+
     load_models()
-    
+
     # Update metrics
     metrics_collector.set_model_load_status("housing", housing_model is not None)
     metrics_collector.set_model_load_status("iris", iris_model is not None)
-    
+
     # Print startup summary
-    print(f"📊 Models loaded - Housing: {housing_model is not None}, Iris: {iris_model is not None}")
+    print(
+        f"📊 Models loaded - Housing: {housing_model is not None}, Iris: {iris_model is not None}"
+    )
     print("✅ API startup complete!")
-    
+
     yield
 
 
@@ -69,12 +71,12 @@ app = FastAPI(
 def load_models():
     """Load the trained models from MLflow with fallback options"""
     global housing_model, iris_model
-    
+
     # Set MLflow tracking URI
     mlflow_uri = os.getenv("MLFLOW_TRACKING_URI", "file:./mlruns")
     mlflow.set_tracking_uri(mlflow_uri)
     print(f"MLflow tracking URI: {mlflow_uri}")
-    
+
     # Try multiple loading strategies for housing model
     housing_loaded = False
     housing_strategies = [
@@ -83,9 +85,9 @@ def load_models():
         # Strategy 2: Load from specific run (if registry fails)
         lambda: _load_latest_model_from_runs("CaliforniaHousing"),
         # Strategy 3: Load from local artifacts
-        lambda: _load_model_from_artifacts("housing")
+        lambda: _load_model_from_artifacts("housing"),
     ]
-    
+
     for i, strategy in enumerate(housing_strategies, 1):
         try:
             print(f"Trying housing model loading strategy {i}...")
@@ -97,11 +99,11 @@ def load_models():
         except Exception as e:
             print(f"❌ Housing model loading strategy {i} failed: {e}")
             continue
-    
+
     if not housing_loaded:
         print("⚠️ All housing model loading strategies failed")
         housing_model = None
-    
+
     # Try multiple loading strategies for iris model
     iris_loaded = False
     iris_strategies = [
@@ -110,9 +112,9 @@ def load_models():
         # Strategy 2: Load from specific run
         lambda: _load_latest_model_from_runs("Iris"),
         # Strategy 3: Load from local artifacts
-        lambda: _load_model_from_artifacts("iris")
+        lambda: _load_model_from_artifacts("iris"),
     ]
-    
+
     for i, strategy in enumerate(iris_strategies, 1):
         try:
             print(f"Trying iris model loading strategy {i}...")
@@ -124,11 +126,11 @@ def load_models():
         except Exception as e:
             print(f"❌ Iris model loading strategy {i} failed: {e}")
             continue
-    
+
     if not iris_loaded:
         print("⚠️ All iris model loading strategies failed")
         iris_model = None
-    
+
     # If no models loaded, try training them
     if not housing_loaded and not iris_loaded:
         print("🔄 No models found, attempting to train models...")
@@ -139,25 +141,25 @@ def _load_latest_model_from_runs(experiment_prefix: str):
     """Load the latest model from MLflow runs"""
     try:
         client = mlflow.tracking.MlflowClient()
-        
+
         # Find experiment
         experiment = None
         for exp in client.search_experiments():
             if experiment_prefix.lower() in exp.name.lower():
                 experiment = exp
                 break
-        
+
         if not experiment:
             print(f"No experiment found with prefix: {experiment_prefix}")
             return None
-        
+
         # Get latest run with a model
         runs = client.search_runs(
             experiment_ids=[experiment.experiment_id],
             order_by=["start_time DESC"],
-            max_results=10
+            max_results=10,
         )
-        
+
         for run in runs:
             try:
                 model_uri = f"runs:/{run.info.run_id}/model"
@@ -167,7 +169,7 @@ def _load_latest_model_from_runs(experiment_prefix: str):
             except Exception as e:
                 print(f"Failed to load from run {run.info.run_id}: {e}")
                 continue
-        
+
         return None
     except Exception as e:
         print(f"Error loading from runs: {e}")
@@ -181,7 +183,7 @@ def _load_model_from_artifacts(model_type: str):
         if not mlruns_path.exists():
             print("MLruns directory not found")
             return None
-        
+
         # Search for model artifacts
         for exp_dir in mlruns_path.iterdir():
             if exp_dir.is_dir() and exp_dir.name.isdigit():
@@ -191,12 +193,14 @@ def _load_model_from_artifacts(model_type: str):
                         if model_path.exists():
                             try:
                                 model = mlflow.pyfunc.load_model(str(model_path))
-                                print(f"Loaded {model_type} model from artifacts: {model_path}")
+                                print(
+                                    f"Loaded {model_type} model from artifacts: {model_path}"
+                                )
                                 return model
                             except Exception as e:
                                 print(f"Failed to load from {model_path}: {e}")
                                 continue
-        
+
         return None
     except Exception as e:
         print(f"Error loading from artifacts: {e}")
@@ -208,39 +212,45 @@ def _train_models_if_missing():
     try:
         import subprocess
         import sys
-        
+
         print("🚀 Training models as fallback...")
-        
+
         # Train housing model
         try:
-            result = subprocess.run([
-                sys.executable, "src/train_housing.py"
-            ], capture_output=True, text=True, timeout=300)
-            
+            result = subprocess.run(
+                [sys.executable, "src/train_housing.py"],
+                capture_output=True,
+                text=True,
+                timeout=300,
+            )
+
             if result.returncode == 0:
                 print("✅ Housing model trained successfully")
             else:
                 print(f"❌ Housing model training failed: {result.stderr}")
         except Exception as e:
             print(f"❌ Error training housing model: {e}")
-        
+
         # Train iris model
         try:
-            result = subprocess.run([
-                sys.executable, "src/train_iris.py"
-            ], capture_output=True, text=True, timeout=300)
-            
+            result = subprocess.run(
+                [sys.executable, "src/train_iris.py"],
+                capture_output=True,
+                text=True,
+                timeout=300,
+            )
+
             if result.returncode == 0:
                 print("✅ Iris model trained successfully")
             else:
                 print(f"❌ Iris model training failed: {result.stderr}")
         except Exception as e:
             print(f"❌ Error training iris model: {e}")
-        
+
         # Try loading again after training
         print("🔄 Attempting to load models after training...")
         load_models()
-        
+
     except Exception as e:
         print(f"❌ Error in fallback training: {e}")
 
@@ -306,19 +316,16 @@ async def reload_models():
     try:
         print("🔄 Manual model reload requested...")
         load_models()
-        
+
         return {
             "status": "success",
             "message": "Models reloaded",
             "housing_loaded": housing_model is not None,
             "iris_loaded": iris_model is not None,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
     except Exception as e:
-        raise HTTPException(
-            status_code=500, 
-            detail=f"Error reloading models: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Error reloading models: {str(e)}")
 
 
 @app.get("/health")
@@ -434,11 +441,11 @@ async def predict_iris(request: IrisPredictionRequest):
 @app.get("/models/info")
 async def get_models_info():
     """Get detailed information about loaded models"""
-    
+
     # Check MLflow connection
     mlflow_status = "unknown"
     mlflow_uri = os.getenv("MLFLOW_TRACKING_URI", "file:./mlruns")
-    
+
     try:
         client = mlflow.tracking.MlflowClient()
         experiments = client.search_experiments()
@@ -447,42 +454,51 @@ async def get_models_info():
     except Exception as e:
         mlflow_status = f"error: {str(e)}"
         experiment_count = 0
-    
+
     # Get model details
     housing_info = {
         "loaded": housing_model is not None,
         "type": "California Housing Regression" if housing_model else None,
         "status": "ready" if housing_model else "not_loaded",
     }
-    
+
     iris_info = {
         "loaded": iris_model is not None,
         "type": "Iris Classification" if iris_model else None,
         "status": "ready" if iris_model else "not_loaded",
     }
-    
+
     # Add model metadata if available
     if housing_model:
         try:
             # Try to get model signature or other metadata
             housing_info["features"] = [
-                "MedInc", "HouseAge", "AveRooms", "AveBedrms", 
-                "Population", "AveOccup", "Latitude", "Longitude"
+                "MedInc",
+                "HouseAge",
+                "AveRooms",
+                "AveBedrms",
+                "Population",
+                "AveOccup",
+                "Latitude",
+                "Longitude",
             ]
             housing_info["output_type"] = "continuous"
         except Exception:
             pass
-    
+
     if iris_model:
         try:
             iris_info["features"] = [
-                "sepal_length", "sepal_width", "petal_length", "petal_width"
+                "sepal_length",
+                "sepal_width",
+                "petal_length",
+                "petal_width",
             ]
             iris_info["output_type"] = "categorical"
             iris_info["classes"] = ["setosa", "versicolor", "virginica"]
         except Exception:
             pass
-    
+
     return {
         "models": {
             "housing_model": housing_info,
@@ -492,7 +508,9 @@ async def get_models_info():
             "mlflow_tracking_uri": mlflow_uri,
             "mlflow_status": mlflow_status,
             "experiment_count": experiment_count,
-            "total_models_loaded": sum([housing_model is not None, iris_model is not None]),
+            "total_models_loaded": sum(
+                [housing_model is not None, iris_model is not None]
+            ),
             "api_status": "healthy",
             "last_updated": datetime.now().isoformat(),
         },
@@ -502,7 +520,7 @@ async def get_models_info():
             "model_retraining": "/retrain",
             "health_check": "/health",
             "metrics": "/metrics/prometheus",
-        }
+        },
     }
 
 
