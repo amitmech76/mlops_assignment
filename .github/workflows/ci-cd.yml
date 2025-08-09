@@ -43,6 +43,18 @@ jobs:
         run: |
           isort --check-only src/
 
+      - name: Train models for testing
+        run: |
+          cd src
+          python train_housing.py
+          python train_iris.py
+          cd ..
+
+      - name: Start API server in background
+        run: |
+          python run_api.py &
+          sleep 15  # Wait for server to start and load models
+          
       - name: Run tests
         run: |
           python -m pytest tests/ -v --cov=src --cov-report=xml

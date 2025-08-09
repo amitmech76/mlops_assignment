@@ -261,7 +261,7 @@ def log_model_with_mlflow(
 
         # Log model with input example
         input_example = X_test.iloc[:2]
-        mlflow.sklearn.log_model(model, name="model", input_example=input_example)
+        mlflow.sklearn.log_model(model, "model", input_example=input_example)
 
         logger.info(f"Logged {model_name} model with run ID: {run.info.run_id}")
         return run.info.run_id
