@@ -11,6 +11,7 @@ import requests
 import time
 import json
 import pandas as pd
+import numpy as np
 from datetime import datetime
 
 # API configuration
