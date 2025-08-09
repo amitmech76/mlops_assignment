@@ -1,0 +1,33 @@
+# Iris Classification Model Training Parameters
+model:
+  max_depth: 5
+  n_estimators: 50
+  random_state: 42
+  
+training:
+  test_size: 0.2
+  cv_folds: 5
+  
+data:
+  features:
+    - sepal_length
+    - sepal_width
+    - petal_length
+    - petal_width
+  target: target
+  classes:
+    - setosa
+    - versicolor
+    - virginica
+  
+preprocessing:
+  scaling: StandardScaler
+  feature_selection: false
+  
+evaluation:
+  metrics:
+    - accuracy
+    - precision
+    - recall
+    - f1_score
+    - confusion_matrix

@@ -1,0 +1,82 @@
+stages:
+  prepare_housing_data:
+    cmd: python src/data_load_housing.py
+    deps:
+    - src/data_load_housing.py
+    outs:
+    - data/housing_raw.csv:
+        cache: false
+    - data/housing_processed.csv:
+        cache: false
+    desc: "Download and preprocess California Housing dataset"
+    
+  prepare_iris_data:
+    cmd: python src/data_load_iris.py
+    deps:
+    - src/data_load_iris.py
+    outs:
+    - data/iris_raw.csv:
+        cache: false
+    - data/iris_processed.csv:
+        cache: false
+    desc: "Download and preprocess Iris dataset"
+    
+  train_housing_model:
+    cmd: cd src && python train_housing.py
+    deps:
+    - src/train_housing.py
+    - data/housing_processed.csv
+    params:
+    - train_housing_params.yaml:
+        - model.max_depth
+        - model.n_estimators
+        - model.random_state
+        - training.test_size
+        - training.cv_folds
+    outs:
+    - mlruns/
+    metrics:
+    - metrics/housing_metrics.json
+    desc: "Train California Housing regression models"
+    
+  train_iris_model:
+    cmd: cd src && python train_iris.py
+    deps:
+    - src/train_iris.py
+    - data/iris_processed.csv
+    params:
+    - train_iris_params.yaml:
+        - model.max_depth
+        - model.n_estimators
+        - model.random_state
+        - training.test_size
+        - training.cv_folds
+    outs:
+    - mlruns/
+    metrics:
+    - metrics/iris_metrics.json
+    desc: "Train Iris classification models"
+    
+  evaluate_models:
+    cmd: python src/model_evaluation.py
+    deps:
+    - src/model_evaluation.py
+    - mlruns/
+    - data/housing_processed.csv
+    - data/iris_processed.csv
+    metrics:
+    - metrics/evaluation_report.json
+    plots:
+    - plots/model_comparison.png
+    - plots/performance_metrics.png
+    desc: "Evaluate and compare trained models"
+    
+  validate_deployment:
+    cmd: python tests/test_api.py
+    deps:
+    - tests/test_api.py
+    - src/api.py
+    - mlruns/
+    metrics:
+    - metrics/deployment_tests.json
+    desc: "Validate model deployment readiness"

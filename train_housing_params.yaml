@@ -1,0 +1,33 @@
+# California Housing Model Training Parameters
+model:
+  max_depth: 10
+  n_estimators: 100
+  random_state: 42
+  
+training:
+  test_size: 0.2
+  cv_folds: 5
+  
+data:
+  features:
+    - MedInc
+    - HouseAge
+    - AveRooms
+    - AveBedrms
+    - Population
+    - AveOccup
+    - Latitude
+    - Longitude
+  target: MedHouseVal
+  
+preprocessing:
+  scaling: StandardScaler
+  outlier_removal: true
+  outlier_threshold: 3.0
+  
+evaluation:
+  metrics:
+    - rmse
+    - mae
+    - r2_score
+    - mape
