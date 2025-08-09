@@ -16,8 +16,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy all source code
 COPY src/ ./src/
-COPY mlruns/ ./mlruns/
-RUN mkdir -p logs
+COPY run_api.py ./
+# Create mlruns directory if it doesn't exist
+RUN mkdir -p mlruns logs
 
 ENV MLFLOW_TRACKING_URI=file:./mlruns
 
@@ -28,4 +29,4 @@ HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
 
 # Run the application
-CMD ["python", "src/api.py"]
+CMD ["python", "run_api.py"]
