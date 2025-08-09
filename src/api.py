@@ -13,12 +13,22 @@ from pydantic import BaseModel
 
 from logger import log_prediction_request, prediction_logger
 from model_retraining import model_retrainer
-from prometheus_metrics import (get_metrics_content_type,
-                                get_prometheus_metrics, metrics_collector)
-from schemas import (DataDriftRequest, DataDriftResponse, ErrorResponse,
-                     HealthCheckResponse, HousingPredictionRequest,
-                     IrisPredictionRequest, PredictionResponse,
-                     RetrainingRequest, RetrainingResponse)
+from prometheus_metrics import (
+    get_metrics_content_type,
+    get_prometheus_metrics,
+    metrics_collector,
+)
+from schemas import (
+    DataDriftRequest,
+    DataDriftResponse,
+    ErrorResponse,
+    HealthCheckResponse,
+    HousingPredictionRequest,
+    IrisPredictionRequest,
+    PredictionResponse,
+    RetrainingRequest,
+    RetrainingResponse,
+)
 
 # Global variables to store loaded models
 housing_model = None
