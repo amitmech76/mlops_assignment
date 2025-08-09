@@ -13,7 +13,7 @@ scrape_configs:
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
     static_configs:
-      - targets: ['localhost:8000']
+      - targets: ['ml-api:8000']
         labels:
           service: 'ml-prediction-api'
           environment: 'development'
