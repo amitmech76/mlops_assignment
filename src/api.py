@@ -40,9 +40,9 @@ from contextlib import asynccontextmanager
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("🚀 Starting ML Prediction API...")
-    print(f"🔧 Working directory: {os.getcwd()}")
-    print(f"🏗️ MLflow URI: {os.getenv('MLFLOW_TRACKING_URI', 'file:./mlruns')}")
+    print("Starting ML Prediction API...")
+    print(f"Working directory: {os.getcwd()}")
+    print(f"MLflow URI: {os.getenv('MLFLOW_TRACKING_URI', 'file:./mlruns')}")
 
     load_models()
 
@@ -52,9 +52,9 @@ async def lifespan(app: FastAPI):
 
     # Print startup summary
     print(
-        f"📊 Models loaded - Housing: {housing_model is not None}, Iris: {iris_model is not None}"
+        f"Models loaded - Housing: {housing_model is not None}, Iris: {iris_model is not None}"
     )
-    print("✅ API startup complete!")
+    print("API startup complete!")
 
     yield
 
@@ -93,15 +93,15 @@ def load_models():
             print(f"Trying housing model loading strategy {i}...")
             housing_model = strategy()
             if housing_model is not None:
-                print(f"✅ California Housing model loaded successfully (strategy {i})")
+                print(f"California Housing model loaded successfully (strategy {i})")
                 housing_loaded = True
                 break
         except Exception as e:
-            print(f"❌ Housing model loading strategy {i} failed: {e}")
+            print(f"Housing model loading strategy {i} failed: {e}")
             continue
 
     if not housing_loaded:
-        print("⚠️ All housing model loading strategies failed")
+        print("All housing model loading strategies failed")
         housing_model = None
 
     # Try multiple loading strategies for iris model
@@ -120,20 +120,20 @@ def load_models():
             print(f"Trying iris model loading strategy {i}...")
             iris_model = strategy()
             if iris_model is not None:
-                print(f"✅ Iris model loaded successfully (strategy {i})")
+                print(f"Iris model loaded successfully (strategy {i})")
                 iris_loaded = True
                 break
         except Exception as e:
-            print(f"❌ Iris model loading strategy {i} failed: {e}")
+            print(f"Iris model loading strategy {i} failed: {e}")
             continue
 
     if not iris_loaded:
-        print("⚠️ All iris model loading strategies failed")
+        print("All iris model loading strategies failed")
         iris_model = None
 
     # If no models loaded, try training them
     if not housing_loaded and not iris_loaded:
-        print("🔄 No models found, attempting to train models...")
+        print("No models found, attempting to train models...")
         _train_models_if_missing()
 
 
@@ -225,11 +225,11 @@ def _train_models_if_missing():
             )
 
             if result.returncode == 0:
-                print("✅ Housing model trained successfully")
+                print("Housing model trained successfully")
             else:
-                print(f"❌ Housing model training failed: {result.stderr}")
+                print(f"Housing model training failed: {result.stderr}")
         except Exception as e:
-            print(f"❌ Error training housing model: {e}")
+            print(f"Error training housing model: {e}")
 
         # Train iris model
         try:
@@ -241,18 +241,18 @@ def _train_models_if_missing():
             )
 
             if result.returncode == 0:
-                print("✅ Iris model trained successfully")
+                print("Iris model trained successfully")
             else:
-                print(f"❌ Iris model training failed: {result.stderr}")
+                print(f"Iris model training failed: {result.stderr}")
         except Exception as e:
-            print(f"❌ Error training iris model: {e}")
+            print(f"Error training iris model: {e}")
 
         # Try loading again after training
-        print("🔄 Attempting to load models after training...")
+        print("Attempting to load models after training...")
         load_models()
 
     except Exception as e:
-        print(f"❌ Error in fallback training: {e}")
+        print(f"Error in fallback training: {e}")
 
 
 # Middleware for metrics collection

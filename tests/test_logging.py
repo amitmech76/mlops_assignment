@@ -71,89 +71,89 @@ def get_recent_logs():
 
 def main():
     """Main test function"""
-    print("🧪 Testing Logging and Metrics Functionality")
+    print("Testing Logging and Metrics Functionality")
     print("=" * 50)
     
     # Check if API is running
     try:
         health_response = requests.get(f"{BASE_URL}/health")
         if health_response.status_code != 200:
-            print("❌ API is not running. Please start the API first.")
+            print("ERROR: API is not running. Please start the API first.")
             return
-        print("✅ API is running")
+        print("PASS: API is running")
     except:
-        print("❌ Cannot connect to API. Please start the API first.")
+        print("ERROR: Cannot connect to API. Please start the API first.")
         return
     
-    print("\n📊 Initial Metrics:")
+    print("\nInitial Metrics:")
     initial_metrics = get_metrics()
     if initial_metrics:
         overall = initial_metrics.get('overall_stats', {})
-        print(f"   Total Predictions: {overall.get('total_predictions', 0)}")
-        print(f"   Successful: {overall.get('successful_predictions', 0)}")
-        print(f"   Error Rate: {overall.get('error_rate_percent', 0)}%")
-    
-    print("\n🚀 Making Test Predictions...")
+        print(f"Total Predictions: {overall.get('total_predictions', 0)}")
+        print(f"Successful: {overall.get('successful_predictions', 0)}")
+        print(f"Error Rate: {overall.get('error_rate_percent', 0)}%")
+
+    print("\nMaking Test Predictions...")
     
     # Make multiple predictions
     for i in range(5):
         print(f"\n--- Test {i+1} ---")
         
         # Housing prediction
-        print("🏠 Testing Housing Prediction...")
+        print("Testing Housing Prediction...")
         housing_result = test_housing_prediction()
         if housing_result:
-            print(f"   ✅ Prediction: {housing_result.get('prediction', 'N/A')}")
+            print(f"PASS: Prediction: {housing_result.get('prediction', 'N/A')}")
         else:
-            print("   ❌ Housing prediction failed")
-        
+            print("FAIL: Housing prediction failed")
+
         time.sleep(0.5)
         
         # Iris prediction
-        print("🌸 Testing Iris Prediction...")
+        print("Testing Iris Prediction...")
         iris_result = test_iris_prediction()
         if iris_result:
-            print(f"   ✅ Prediction: {iris_result.get('prediction', 'N/A')}")
+            print(f"PASS: Prediction: {iris_result.get('prediction', 'N/A')}")
             if iris_result.get('confidence'):
-                print(f"   📊 Confidence: {iris_result.get('confidence'):.2f}")
+                print(f"Confidence: {iris_result.get('confidence'):.2f}")
         else:
-            print("   ❌ Iris prediction failed")
-        
+            print("FAIL: Iris prediction failed")
+
         time.sleep(0.5)
     
     # Test invalid request
-    print("\n⚠️  Testing Invalid Request...")
+    print("\nTesting Invalid Request...")
     invalid_result = test_invalid_request()
     if invalid_result:
-        print("   ❌ Invalid request should have failed")
+        print("FAIL: Invalid request should have failed")
     else:
-        print("   ✅ Invalid request properly rejected")
-    
-    print("\n📈 Final Metrics:")
+        print("PASS: Invalid request properly rejected")
+
+    print("\nFinal Metrics:")
     final_metrics = get_metrics()
     if final_metrics:
         overall = final_metrics.get('overall_stats', {})
-        print(f"   Total Predictions: {overall.get('total_predictions', 0)}")
-        print(f"   Successful: {overall.get('successful_predictions', 0)}")
-        print(f"   Error Rate: {overall.get('error_rate_percent', 0)}%")
-        print(f"   Avg Processing Time: {overall.get('avg_processing_time_ms', 0)}ms")
-        
+        print(f"Total Predictions: {overall.get('total_predictions', 0)}")
+        print(f"Successful: {overall.get('successful_predictions', 0)}")
+        print(f"Error Rate: {overall.get('error_rate_percent', 0)}%")
+        print(f"Avg Processing Time: {overall.get('avg_processing_time_ms', 0)}ms")
+
         # Model-specific stats
         model_stats = final_metrics.get('model_stats', {})
         for model, stats in model_stats.items():
-            print(f"   📋 {model.title()}: {stats.get('total_predictions', 0)} predictions")
-    
-    print("\n📝 Recent Logs:")
+            print(f"{model.title()}: {stats.get('total_predictions', 0)} predictions")
+
+    print("\nRecent Logs:")
     logs = get_recent_logs()
     if logs and logs.get('recent_predictions'):
         for pred in logs['recent_predictions'][:3]:
-            status = "✅" if pred['status'] == 'success' else "❌"
-            print(f"   {status} {pred['model_name']}: {pred['prediction']} ({pred['processing_time_ms']:.1f}ms)")
+            status = "PASS" if pred['status'] == 'success' else "FAIL"
+            print(f"  {status} {pred['model_name']}: {pred['prediction']} ({pred['processing_time_ms']:.1f}ms)")
     else:
-        print("   📭 No recent logs available")
-    
-    print("\n🎉 Logging test completed!")
-    print("💡 Check the logs directory for detailed logs and SQLite database")
+        print("No recent logs available")
+
+    print("\nLogging test completed!")
+    print("NOTE: Check the logs directory for detailed logs and SQLite database")
 
 if __name__ == "__main__":
-    main() 
+    main()

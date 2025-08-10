@@ -137,31 +137,31 @@ jobs:
 
       - name: Deploy to local environment
         run: |
-          echo "🚀 Starting local deployment with trained models..."
+          echo "Starting local deployment with trained models..."
           # Use the actual deployment script
           ./scripts/deploy_local.sh
           
           # Verify deployment
-          echo "🔍 Verifying deployment..."
+          echo "Verifying deployment..."
           sleep 15
           
           # Test the API endpoints
-          echo "📊 Testing API endpoints..."
-          curl -f http://localhost:8000/health || (echo "❌ Health check failed" && exit 1)
-          curl -f http://localhost:8000/models/info || (echo "❌ Models info failed" && exit 1)
+          echo "Testing API endpoints..."
+          curl -f http://localhost:8000/health || (echo "ERROR: Health check failed" && exit 1)
+          curl -f http://localhost:8000/models/info || (echo "ERROR: Models info failed" && exit 1)
           
-          echo "✅ Local deployment completed and verified successfully!"
-          echo "📋 API is running at: http://localhost:8000"
-          echo "📊 API Documentation: http://localhost:8000/docs"
+          echo "SUCCESS: Local deployment completed and verified successfully!"
+          echo "API is running at: http://localhost:8000"
+          echo "API Documentation: http://localhost:8000/docs"
 
       - name: Optional monitoring stack deployment
         run: |
-          echo "🔍 Setting up monitoring stack..."
+          echo "Setting up monitoring stack..."
           cd monitoring
           
           # Check if monitoring should be deployed (can be controlled via environment variable)
           if [[ "${DEPLOY_MONITORING:-false}" == "true" ]]; then
-            echo "📊 Deploying Prometheus and Grafana monitoring..."
+            echo "Deploying Prometheus and Grafana monitoring..."
             docker-compose -f docker-compose-monitoring.yml up -d
             
             # Wait for monitoring services
@@ -169,14 +169,14 @@ jobs:
             
             # Verify monitoring
             if curl -f http://localhost:9090/-/healthy > /dev/null 2>&1; then
-              echo "✅ Prometheus is healthy at http://localhost:9090"
+              echo "SUCCESS: Prometheus is healthy at http://localhost:9090"
             fi
             
             if curl -f http://localhost:3000/api/health > /dev/null 2>&1; then
-              echo "✅ Grafana is healthy at http://localhost:3000 (admin/admin)"
+              echo "SUCCESS: Grafana is healthy at http://localhost:3000 (admin/admin)"
             fi
             
-            echo "📊 Monitoring stack deployed successfully!"
+            echo "Monitoring stack deployed successfully!"
           else
-            echo "ℹ️  Monitoring deployment skipped (set DEPLOY_MONITORING=true to enable)"
+            echo "INFO: Monitoring deployment skipped (set DEPLOY_MONITORING=true to enable)"
           fi

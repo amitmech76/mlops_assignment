@@ -104,53 +104,53 @@ def display_dashboard():
     print()
     
     # API Health
-    print("🔍 API Health Check:")
+    print("API Health Check:")
     health = get_api_health()
     if health:
-        print(f"   ✅ Status: {health.get('status', 'unknown')}")
-        print(f"   📊 Models Loaded: {health.get('models_loaded', {})}")
+        print(f"   PASS: Status: {health.get('status', 'unknown')}")
+        print(f"   Models Loaded: {health.get('models_loaded', {})}")
     else:
-        print("   ❌ API not responding")
+        print("   FAIL: API not responding")
     print()
     
     # Metrics
-    print("📈 Metrics:")
+    print("Metrics:")
     metrics = get_metrics()
     if metrics:
         overall = metrics.get('overall_stats', {})
-        print(f"   📊 Total Predictions: {overall.get('total_predictions', 0)}")
-        print(f"   ✅ Successful: {overall.get('successful_predictions', 0)}")
-        print(f"   ❌ Error Rate: {overall.get('error_rate_percent', 0)}%")
-        print(f"   ⏱️  Avg Processing Time: {overall.get('avg_processing_time_ms', 0)}ms")
+        print(f"   Total Predictions: {overall.get('total_predictions', 0)}")
+        print(f"   Successful: {overall.get('successful_predictions', 0)}")
+        print(f"   Error Rate: {overall.get('error_rate_percent', 0)}%")
+        print(f"   Avg Processing Time: {overall.get('avg_processing_time_ms', 0)}ms")
         
         # Model-specific stats
         model_stats = metrics.get('model_stats', {})
         for model, stats in model_stats.items():
-            print(f"   📋 {model.title()}: {stats.get('total_predictions', 0)} predictions")
+            print(f"   {model.title()}: {stats.get('total_predictions', 0)} predictions")
     else:
-        print("   ❌ Unable to fetch metrics")
+        print("   FAIL: Unable to fetch metrics")
     print()
     
     # Recent Logs
-    print("📝 Recent Predictions:")
+    print("Recent Predictions:")
     logs = get_recent_logs()
     if logs and logs.get('recent_predictions'):
         for pred in logs['recent_predictions'][:3]:  # Show last 3
-            status_emoji = "✅" if pred['status'] == 'success' else "❌"
-            print(f"   {status_emoji} {pred['model_name']}: {pred['prediction']} ({pred['processing_time_ms']:.1f}ms)")
+            status_text = "PASS" if pred['status'] == 'success' else "FAIL"
+            print(f"   {status_text} {pred['model_name']}: {pred['prediction']} ({pred['processing_time_ms']:.1f}ms)")
     else:
-        print("   📭 No recent predictions")
+        print("   No recent predictions")
     print()
     
     # Direct DB Stats (fallback)
-    print("💾 Database Stats:")
+    print("Database Stats:")
     db_stats = get_direct_db_stats()
     if db_stats:
-        print(f"   📊 Total Records: {db_stats['total_predictions']}")
+        print(f"   Total Records: {db_stats['total_predictions']}")
         for stat in db_stats['model_stats']:
-            print(f"   📋 {stat['model']}: {stat['count']} predictions, {stat['avg_processing_time_ms']}ms avg")
+            print(f"   {stat['model']}: {stat['count']} predictions, {stat['avg_processing_time_ms']}ms avg")
     else:
-        print("   ❌ Database not accessible")
+        print("   FAIL: Database not accessible")
     print()
     
     print("=" * 60)
@@ -168,9 +168,9 @@ def main():
             display_dashboard()
             time.sleep(5)  # Update every 5 seconds
     except KeyboardInterrupt:
-        print("\n🛑 Monitoring stopped")
+        print("\nMonitoring stopped")
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"ERROR: {e}")
 
 if __name__ == "__main__":
-    main() 
+    main()

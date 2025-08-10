@@ -132,7 +132,7 @@ class ModelEvaluator:
         }
 
         logger.info(
-            f"{model_name} Regression Metrics: RMSE={metrics['rmse']:.4f}, R²={metrics['r2_score']:.4f}"
+            f"{model_name} Regression Metrics: RMSE={metrics['rmse']:.4f}, R2={metrics['r2_score']:.4f}"
         )
         return metrics
 
@@ -181,7 +181,7 @@ class ModelEvaluator:
         # Plot 1: Housing Model Metrics
         if "housing" in all_metrics:
             housing_metrics = all_metrics["housing"]
-            metrics_names = ["RMSE", "MAE", "R² Score", "MAPE"]
+            metrics_names = ["RMSE", "MAE", "R2 Score", "MAPE"]
             metrics_values = [
                 housing_metrics.get("rmse", 0),
                 housing_metrics.get("mae", 0),
@@ -265,7 +265,7 @@ class ModelEvaluator:
                     "Model": "Housing",
                     "Type": "Regression",
                     "Primary Metric": all_metrics["housing"].get("r2_score", 0),
-                    "Metric Name": "R² Score",
+                    "Metric Name": "R2 Score",
                 }
             )
         if "iris" in all_metrics:
@@ -373,17 +373,17 @@ def main():
     print(f"Models Evaluated: {results['models_evaluated']}")
 
     for model_name, metrics in results["results"].items():
-        print(f"\n📊 {model_name.upper()} MODEL:")
+        print(f"\n{model_name.upper()} MODEL:")
         if "accuracy" in metrics:
             print(f"   Accuracy: {metrics['accuracy']:.4f}")
             print(f"   F1 Score: {metrics['f1_score']:.4f}")
         if "rmse" in metrics:
             print(f"   RMSE: {metrics['rmse']:.4f}")
-            print(f"   R² Score: {metrics['r2_score']:.4f}")
+            print(f"   R2 Score: {metrics['r2_score']:.4f}")
         print(f"   Samples: {metrics['samples_evaluated']}")
 
-    print(f"\n📈 Plots saved to: plots/")
-    print(f"📋 Metrics saved to: metrics/evaluation_report.json")
+    print(f"\nPlots saved to: plots/")
+    print(f"Metrics saved to: metrics/evaluation_report.json")
     print("=" * 60)
 
 

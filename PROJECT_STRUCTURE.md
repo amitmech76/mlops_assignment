@@ -5,14 +5,14 @@ This document outlines the comprehensive structure of the ML Prediction API proj
 ## Overview
 
 A production-ready machine learning prediction API with comprehensive MLOps features including:
-- 🚀 FastAPI-based prediction service for Housing and Iris models
-- 🔄 Data Version Control (DVC) for reproducible ML pipelines
-- 📊 Prometheus + Grafana monitoring stack
-- 🐳 Docker containerization with multi-stage builds
-- 🔧 GitHub Actions CI/CD pipeline
-- 📈 MLflow experiment tracking and model registry
-- 🧪 Comprehensive testing suite
-- 📝 Automated logging and error tracking
+- FastAPI-based prediction service for Housing and Iris models
+- Data Version Control (DVC) for reproducible ML pipelines
+- Prometheus + Grafana monitoring stack
+- Docker containerization with multi-stage builds
+- GitHub Actions CI/CD pipeline
+- MLflow experiment tracking and model registry
+- Comprehensive testing suite
+- Automated logging and error tracking
 
 ## Directory Layout
 
@@ -107,13 +107,13 @@ mlops_assignment/
 
 ## Key Features & Components
 
-### 🤖 Machine Learning Pipeline
+### Machine Learning Pipeline
 - **Models**: Housing price prediction (regression) + Iris classification
 - **Training**: Automated training scripts with MLflow tracking
 - **Evaluation**: Comprehensive model evaluation and comparison
 - **Registry**: MLflow model registry with versioning
 
-### 🔄 Data Version Control (DVC)
+### Data Version Control (DVC)
 - **Pipeline Stages**:
   1. `data_preparation` - Raw data loading and validation
   2. `feature_engineering` - Feature preprocessing and transformation
@@ -124,34 +124,34 @@ mlops_assignment/
 - **Reproducibility**: Parameterized pipelines with `params.yaml`
 - **Artifacts**: Versioned models, metrics, and datasets
 
-### 🚀 API Service
+### API Service
 - **Framework**: FastAPI with automatic OpenAPI documentation
 - **Endpoints**: Health checks, model info, predictions, metrics
 - **Model Loading**: Multi-strategy loading (MLflow, local files, training fallback)
 - **Error Handling**: Comprehensive error responses and logging
 - **Validation**: Pydantic schema validation for all inputs/outputs
 
-### 📊 Monitoring & Observability
+### Monitoring & Observability
 - **Metrics**: Prometheus metrics for requests, predictions, errors, latency
 - **Dashboards**: Grafana dashboards with ML-specific visualizations
 - **Logging**: Structured logging with multiple output formats
 - **Health Checks**: Container and service health monitoring
 - **Alerting**: Performance and error rate monitoring
 
-### 🐳 Containerization
+### Containerization
 - **Multi-stage Build**: Optimized Docker images with model training
 - **Orchestration**: Docker Compose for local development
 - **Networking**: Proper service discovery (prometheus:9090, ml-api:8000)
 - **Volumes**: Persistent storage for models, logs, and metrics
 
-### 🔧 CI/CD Pipeline
+### CI/CD Pipeline
 - **Stages**: Lint → Test → Build → Deploy → Verify
 - **Quality Gates**: Black, isort, flake8, pytest with coverage
 - **Deployment**: Automated local deployment with health verification
 - **Monitoring**: Optional monitoring stack deployment
 - **Artifacts**: Docker image building and registry push
 
-### 🧪 Testing Strategy
+### Testing Strategy
 - **Unit Tests**: Core functionality and edge cases
 - **Integration Tests**: API endpoints and workflows
 - **Coverage**: Automated coverage reporting with Codecov
@@ -159,7 +159,7 @@ mlops_assignment/
 
 ## Usage Examples
 
-### 🏃 Quick Start
+### Quick Start
 ```bash
 # Clone and setup
 git clone <repository>
@@ -176,7 +176,7 @@ python run_api.py
 open http://localhost:8000/docs
 ```
 
-### 🔄 DVC Workflow
+### DVC Workflow
 ```bash
 # Reproduce entire pipeline
 dvc repro
@@ -191,7 +191,7 @@ dvc dag
 dvc metrics show
 ```
 
-### 🐳 Docker Deployment
+### Docker Deployment
 ```bash
 # API only
 ./scripts/deploy_local.sh
@@ -203,14 +203,14 @@ dvc metrics show
 ./scripts/deploy_comprehensive.sh --status
 ```
 
-### 📊 Monitoring Access
+### Monitoring Access
 - **API Documentation**: http://localhost:8000/docs
 - **Health Check**: http://localhost:8000/health
 - **Prometheus Metrics**: http://localhost:9090
 - **Grafana Dashboard**: http://localhost:3000 (admin/admin)
 - **API Metrics**: http://localhost:8000/metrics/prometheus
 
-### 🧪 Testing Commands
+### Testing Commands
 ```bash
 # Run all tests
 pytest tests/ -v --cov=src
@@ -223,7 +223,7 @@ pytest tests/test_advanced_features.py -v
 pytest --cov=src --cov-report=html
 ```
 
-### 🔧 Development Workflow
+### Development Workflow
 ```bash
 # Format code
 python -m black src/
